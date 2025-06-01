@@ -28,6 +28,7 @@ class SymbolApp:
         self.button_clear = tk.Button(master, text="Clear", command=self.clear_canvas)
         self.button_clear.pack()
 
+        self.canvas.bind("<Button-1>", self.on_pen_down)
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.on_pen_lift)
 
@@ -40,6 +41,10 @@ class SymbolApp:
 
     def status_text(self):
         return f"Draw symbol for label '{self.label}' - Sample {self.current_sample_num} of {self.samples_per_label}. Draw and release mouse to save."
+    
+    def on_pen_down(self, event):
+        self.prev_x, self.prev_y = event.x, event.y
+
 
     def draw(self, event):
         x, y = event.x, event.y
@@ -84,13 +89,19 @@ class SymbolApp:
 
         self.info_label.config(text=self.status_text())
         self.clear_canvas()
+        
 
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Symbol Collector")
 
-    labels = ['a', 'b', 'c']    # example labels
-    samples_per_label = 2      # example samples per label
+    labels = ['Fire Level 1', 'Fire Level 2', 'Fire Level 3'
+              ,'Air Level 1', 'Air Level 2', 'Air Level 3'
+              ,'Water Level 1', 'Water Level 2', 'Water Level 3'
+              ,'Earth Level 1', 'Earth Level 2', 'Earth Level 3'
+              ,'Dark Level 1', 'Dark Level 2', 'Dark Level 3'
+              ,'Light Level 1', 'Light Level 2', 'Fire Level 3']    # example labels
+    samples_per_label = 25      # example samples per label
 
     app = SymbolApp(root, labels, samples_per_label)
     root.mainloop()
