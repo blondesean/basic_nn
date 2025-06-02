@@ -6,7 +6,7 @@ import re
 DATA_DIR = "data"
 OUTPUT_DIR = "dataset"
 CSV_FILENAME = "symbol_data.csv"
-IMAGE_SIZE = 256  # Size to scale up to
+IMAGE_SIZE = 28  # Size to scale up to
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -20,16 +20,24 @@ def process_image(filepath):
     return list(img.getdata())
 
 def main():
-    images = [f for f in os.listdir(DATA_DIR) if f.lower().endswith(".png")]
-    images.sort()  # optional: keep consistent order
+    all_images = []
+    for folder in ["data", "augmented"]:
+        folder_path = os.path.join(folder)
+        if not os.path.isdir(folder_path):
+            print(f"⚠️ Folder not found: {folder_path}")
+            continue
+        images = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.lower().endswith(".png")]
+        all_images.extend(images)
 
-    header = ["Label"] + [f"pixel_{row+1}x{col+1}" for row in range(IMAGE_SIZE) for col in range(IMAGE_SIZE)]
+    all_images.sort()  # Optional: keep a consistent order
+
+    header = ["Label"] + [f"p_{row+1}x{col+1}" for row in range(IMAGE_SIZE) for col in range(IMAGE_SIZE)]
     rows = []
 
-    for image_file in images:
-        label = extract_label(image_file)
-        filepath = os.path.join(DATA_DIR, image_file)
-        pixels = process_image(filepath)
+    for image_path in all_images:
+        filename = os.path.basename(image_path)
+        label = extract_label(filename)
+        pixels = process_image(image_path)
         row = [label] + pixels
         rows.append(row)
 
