@@ -15,12 +15,12 @@ def augment_image(image_path, output_dir, num_variants=10):
 
     for i in range(num_variants):
         # Random small scale and translation values
-        scale_x = random.uniform(0.8, 1.2)
-        scale_y = random.uniform(0.8, 1.2)
-        shear_x = random.uniform(-0.25, 0.25)  # subtle shear
-        shear_y = random.uniform(-0.25, 0.25)
-        translate_x = random.uniform(-7, 7)
-        translate_y = random.uniform(-7, 7)
+        scale_x = random.uniform(0.7, 1.3)
+        scale_y = random.uniform(0.7, 1.3)
+        shear_x = random.uniform(-0.4, 0.4)  # subtle shear
+        shear_y = random.uniform(-0.4, 0.4)
+        translate_x = random.uniform(-12, 12)
+        translate_y = random.uniform(-12, 12)
 
         matrix = (
             scale_x, shear_x, translate_x,
@@ -41,4 +41,4 @@ os.makedirs(output_folder, exist_ok=True)
 
 for filename in os.listdir(input_folder):
     if filename.endswith(".png"):
-        augment_image(os.path.join(input_folder, filename), output_folder, num_variants=25)
+        augment_image(os.path.join(input_folder, filename), output_folder, num_variants=1000)

@@ -11,11 +11,16 @@ IMAGE_SIZE = 28  # Size to scale up to
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def extract_label(filename):
-    match = re.match(r"([a-zA-Z]+)_\d+\.png", filename)
+    match = re.match(r"([^_]+)_", filename)
     return match.group(1) if match else "unknown"
 
 def process_image(filepath):
-    img = Image.open(filepath).convert("L")
+    img = Image.open(filepath)
+    if img.mode in ("RGBA", "LA"):  # Has transparency
+        bg = Image.new("RGB", img.size, (255, 255, 255))  # white background
+        bg.paste(img, mask=img.split()[-1])  # Paste with alpha channel as mask
+        img = bg
+    img = img.convert("L")  # Convert to grayscale
     img = img.resize((IMAGE_SIZE, IMAGE_SIZE), Image.LANCZOS)
     return list(img.getdata())
 
